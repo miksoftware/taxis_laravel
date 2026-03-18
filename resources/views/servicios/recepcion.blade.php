@@ -125,9 +125,14 @@
             {{-- Dirección --}}
             <div class="col-md-3">
                 <label class="form-label">Dirección</label>
-                <select class="form-select form-select-sm" id="selectDireccion" disabled>
-                    <option value="">Primero busque un cliente</option>
-                </select>
+                <div class="input-group input-group-sm">
+                    <select class="form-select form-select-sm" id="selectDireccion" disabled>
+                        <option value="">Primero busque un cliente</option>
+                    </select>
+                    <button type="button" class="btn btn-outline-success" id="btnNuevaDireccion" disabled title="Agregar dirección">
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                </div>
                 <input type="hidden" id="inputDireccionId">
             </div>
             {{-- Condición --}}
@@ -251,6 +256,35 @@
         </div>
     </div>
 </div>
+{{-- Modal Crear Dirección --}}
+<div class="modal fade" id="modalNuevaDireccion" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h6 class="modal-title"><i class="bi bi-geo-alt me-1"></i> Nueva Dirección</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Dirección <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="nuevaDireccionTexto" placeholder="Ej: Calle 10 # 5-20" maxlength="255" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Referencia</label>
+                    <input type="text" class="form-control" id="nuevaDireccionReferencia" placeholder="Ej: Frente al parque, casa azul" maxlength="255">
+                </div>
+                <div id="errorNuevaDireccion" class="alert alert-danger d-none"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success btn-sm" id="btnGuardarDireccion">
+                    <i class="bi bi-check-lg me-1"></i> Guardar y Seleccionar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -504,6 +538,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('inputClienteId').value = cliente.id;
         document.getElementById('inputClienteNombre').value = cliente.nombre || 'Sin nombre';
         inputTel.value = cliente.telefono;
+        document.getElementById('btnNuevaDireccion').disabled = false;
         cargarDirecciones(cliente.id);
     }
 
@@ -617,6 +652,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('inputDireccionId').value = '';
         document.getElementById('selectCondicion').value = 'ninguno';
         document.getElementById('inputObservaciones').value = '';
+        document.getElementById('btnNuevaDireccion').disabled = true;
         document.getElementById('inputTelefono').focus();
     }
 
@@ -770,6 +806,72 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } catch (e) { alert('Error de conexión'); }
     };
+
+    // ══════════════════════════════════════════
+    // CREAR DIRECCIÓN DESDE RECEPCIÓN
+    // ══════════════════════════════════════════
+    document.getElementById('btnNuevaDireccion').addEventListener('click', function() {
+        const clienteId = document.getElementById('inputClienteId').value;
+        if (!clienteId) return;
+        document.getElementById('nuevaDireccionTexto').value = '';
+        document.getElementById('nuevaDireccionReferencia').value = '';
+        document.getElementById('errorNuevaDireccion').classList.add('d-none');
+        new bootstrap.Modal(document.getElementById('modalNuevaDireccion')).show();
+        setTimeout(() => document.getElementById('nuevaDireccionTexto').focus(), 300);
+    });
+
+    document.getElementById('btnGuardarDireccion').addEventListener('click', async function() {
+        const clienteId = document.getElementById('inputClienteId').value;
+        const direccion = document.getElementById('nuevaDireccionTexto').value.trim();
+        const referencia = document.getElementById('nuevaDireccionReferencia').value.trim();
+        const errorDiv = document.getElementById('errorNuevaDireccion');
+
+        if (!direccion) {
+            errorDiv.textContent = 'La dirección es obligatoria.';
+            errorDiv.classList.remove('d-none');
+            return;
+        }
+
+        const btn = this;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Guardando...';
+        errorDiv.classList.add('d-none');
+
+        try {
+            const res = await fetch('{{ route("direcciones.store") }}', {
+                method: 'POST', headers,
+                body: JSON.stringify({ cliente_id: clienteId, direccion, referencia })
+            });
+            const data = await res.json();
+
+            if (!data.error) {
+                bootstrap.Modal.getInstance(document.getElementById('modalNuevaDireccion')).hide();
+                // Recargar direcciones y seleccionar la nueva
+                await cargarDirecciones(clienteId);
+                const select = document.getElementById('selectDireccion');
+                select.value = data.direccion_id;
+                document.getElementById('inputDireccionId').value = data.direccion_id;
+                validarFormulario();
+            } else {
+                errorDiv.textContent = data.mensaje || 'Error al crear dirección.';
+                errorDiv.classList.remove('d-none');
+            }
+        } catch (e) {
+            errorDiv.textContent = 'Error de conexión.';
+            errorDiv.classList.remove('d-none');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-check-lg me-1"></i> Guardar y Seleccionar';
+        }
+    });
+
+    // Enter en el modal de dirección = guardar
+    document.getElementById('modalNuevaDireccion').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('btnGuardarDireccion').click();
+        }
+    });
 
     // ══════════════════════════════════════════
     // ATAJOS DE TECLADO
