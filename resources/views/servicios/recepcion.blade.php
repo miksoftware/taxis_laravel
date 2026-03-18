@@ -312,6 +312,9 @@
                         <select class="form-select" id="editarSelectDireccion">
                             <option value="">Cargando...</option>
                         </select>
+                        <button type="button" class="btn btn-outline-warning" id="btnEditarDireccionActual" title="Editar dirección seleccionada">
+                            <i class="bi bi-pencil"></i>
+                        </button>
                         <button type="button" class="btn btn-outline-success" id="btnNuevaDireccionEditar" title="Agregar dirección">
                             <i class="bi bi-plus-lg"></i>
                         </button>
@@ -337,6 +340,36 @@
                 <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-sm text-white" style="background:#1a1a2e" id="btnGuardarEditar">
                     <i class="bi bi-check-lg me-1"></i> Guardar Cambios
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{-- Modal Editar Dirección Existente --}}
+<div class="modal fade" id="modalEditarDireccion" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h6 class="modal-title"><i class="bi bi-pencil-square me-1"></i> Editar Dirección</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="editarDireccionId">
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Dirección <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="editarDireccionTexto" maxlength="255">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Referencia</label>
+                    <input type="text" class="form-control" id="editarDireccionReferencia" maxlength="255">
+                </div>
+                <div id="errorEditarDireccion" class="alert alert-danger d-none"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-warning btn-sm" id="btnGuardarEditarDireccion">
+                    <i class="bi bi-check-lg me-1"></i> Guardar
                 </button>
             </div>
         </div>
@@ -939,6 +972,106 @@ document.addEventListener('DOMContentLoaded', function() {
             new bootstrap.Modal(document.getElementById('modalNuevaDireccion')).show();
             setTimeout(() => document.getElementById('nuevaDireccionTexto').focus(), 300);
         }, 300);
+    });
+
+    // Botón editar dirección seleccionada
+    document.getElementById('btnEditarDireccionActual').addEventListener('click', async function() {
+        const select = document.getElementById('editarSelectDireccion');
+        const direccionId = select.value;
+        if (!direccionId) return;
+
+        document.getElementById('editarDireccionId').value = direccionId;
+        document.getElementById('errorEditarDireccion').classList.add('d-none');
+
+        // Cargar datos actuales de la dirección
+        try {
+            const res = await fetch('/direcciones/' + direccionId);
+            const data = await res.json();
+            document.getElementById('editarDireccionTexto').value = data.direccion || '';
+            document.getElementById('editarDireccionReferencia').value = data.referencia || '';
+        } catch (e) {
+            // Fallback: tomar del texto del option
+            const textoOpt = select.selectedOptions[0]?.textContent || '';
+            const match = textoOpt.match(/^(.+?)(?:\s*\((.+?)\))?(?:\s*⭐)?$/);
+            document.getElementById('editarDireccionTexto').value = match ? match[1].trim() : textoOpt;
+            document.getElementById('editarDireccionReferencia').value = match?.[2] || '';
+        }
+
+        bootstrap.Modal.getInstance(document.getElementById('modalEditarServicio')).hide();
+        setTimeout(() => {
+            new bootstrap.Modal(document.getElementById('modalEditarDireccion')).show();
+            setTimeout(() => document.getElementById('editarDireccionTexto').focus(), 300);
+        }, 300);
+    });
+
+    // Guardar edición de dirección existente
+    document.getElementById('btnGuardarEditarDireccion').addEventListener('click', async function() {
+        const direccionId = document.getElementById('editarDireccionId').value;
+        const direccion = document.getElementById('editarDireccionTexto').value.trim();
+        const referencia = document.getElementById('editarDireccionReferencia').value.trim();
+        const errorDiv = document.getElementById('errorEditarDireccion');
+
+        if (!direccion) {
+            errorDiv.textContent = 'La dirección es obligatoria.';
+            errorDiv.classList.remove('d-none');
+            return;
+        }
+
+        const btn = this;
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Guardando...';
+        errorDiv.classList.add('d-none');
+
+        try {
+            const res = await fetch('/direcciones/' + direccionId, {
+                method: 'PUT', headers,
+                body: JSON.stringify({ direccion, referencia })
+            });
+            const data = await res.json();
+
+            if (!data.error) {
+                bootstrap.Modal.getInstance(document.getElementById('modalEditarDireccion')).hide();
+                // Recargar direcciones en el modal editar y volver a abrirlo
+                const clienteId = document.getElementById('editarClienteId').value;
+                const servicioId = document.getElementById('editarServicioId').value;
+                setTimeout(async () => {
+                    const select = document.getElementById('editarSelectDireccion');
+                    const resDir = await fetch('{{ route("direcciones.por-cliente") }}?cliente_id=' + clienteId);
+                    const dataDir = await resDir.json();
+                    if (dataDir.direcciones && dataDir.direcciones.length > 0) {
+                        select.innerHTML = dataDir.direcciones.map(d =>
+                            `<option value="${d.id}" ${d.id == direccionId ? 'selected' : ''}>${d.direccion}${d.referencia ? ' (' + d.referencia + ')' : ''}${d.es_frecuente ? ' ⭐' : ''}</option>`
+                        ).join('');
+                    }
+                    // Actualizar optimistic en el mapa local
+                    const s = serviciosMap.get(parseInt(servicioId));
+                    if (s && s.direccion_id == direccionId) {
+                        s.direccion = direccion;
+                        s.referencia = referencia;
+                        serviciosMap.set(s.id, s);
+                        renderTabla();
+                    }
+                    new bootstrap.Modal(document.getElementById('modalEditarServicio')).show();
+                }, 300);
+            } else {
+                errorDiv.textContent = data.mensaje || 'Error al actualizar.';
+                errorDiv.classList.remove('d-none');
+            }
+        } catch (e) {
+            errorDiv.textContent = 'Error de conexión.';
+            errorDiv.classList.remove('d-none');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="bi bi-check-lg me-1"></i> Guardar';
+        }
+    });
+
+    // Enter en modal editar dirección = guardar
+    document.getElementById('modalEditarDireccion').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('btnGuardarEditarDireccion').click();
+        }
     });
 
     // Guardar cambios del servicio
