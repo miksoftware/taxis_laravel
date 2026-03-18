@@ -34,8 +34,13 @@
                 </select>
             </div>
             <div class="col-md-2">
-                <label class="form-label small">Vehículo ID</label>
-                <input type="number" name="vehiculo_id" class="form-control form-control-sm" value="{{ $filtros['vehiculoId'] }}" placeholder="ID">
+                <label class="form-label small">Vehículo</label>
+                <select name="vehiculo_id" class="form-select form-select-sm" id="selectVehiculo">
+                    <option value="">Todos</option>
+                    @foreach($vehiculos as $v)
+                        <option value="{{ $v->id }}" {{ $filtros['vehiculoId'] == $v->id ? 'selected' : '' }}>{{ $v->numero_movil }} — {{ $v->placa }}</option>
+                    @endforeach
+                </select>
             </div>
             <div class="col-md-2 d-flex gap-2">
                 <button type="submit" class="btn btn-sm" style="background: #1a1a2e; color: #18dff5;">
@@ -236,6 +241,16 @@
 </div>
 @endsection
 
+@push('styles')
+<style>
+    .vehiculo-search-wrap { position: relative; }
+    .vehiculo-search-wrap input { border: 1px solid #ced4da; border-radius: 0.25rem; padding: 0.25rem 0.5rem; font-size: 0.875rem; width: 100%; }
+    .vehiculo-search-wrap .vehiculo-dropdown { position: absolute; z-index: 1050; background: white; border: 1px solid #dee2e6; border-radius: 6px; max-height: 200px; overflow-y: auto; width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.15); display: none; }
+    .vehiculo-search-wrap .vehiculo-dropdown .veh-item { padding: 6px 10px; cursor: pointer; font-size: 0.85rem; border-bottom: 1px solid #f0f0f0; }
+    .vehiculo-search-wrap .veh-item:hover { background: #18dff5; }
+</style>
+@endpush
+
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script>
@@ -274,5 +289,63 @@ new Chart(ctx, {
         scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
     }
 });
+
+// Buscador para select de vehículos
+(function() {
+    const select = document.getElementById('selectVehiculo');
+    if (!select) return;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'vehiculo-search-wrap';
+
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = 'Buscar móvil o placa...';
+    input.autocomplete = 'off';
+
+    const dropdown = document.createElement('div');
+    dropdown.className = 'vehiculo-dropdown';
+
+    // Obtener opciones del select original
+    const opciones = Array.from(select.options).map(o => ({
+        value: o.value,
+        text: o.textContent,
+        selected: o.selected
+    }));
+
+    // Si hay uno seleccionado, mostrarlo
+    const seleccionado = opciones.find(o => o.selected && o.value);
+    if (seleccionado) input.value = seleccionado.text;
+
+    function renderOpciones(filtro) {
+        const term = filtro.toLowerCase();
+        const filtradas = opciones.filter(o => o.value === '' || o.text.toLowerCase().includes(term));
+        dropdown.innerHTML = filtradas.map(o =>
+            `<div class="veh-item" data-value="${o.value}">${o.value ? o.text : '<em>Todos</em>'}</div>`
+        ).join('');
+        dropdown.style.display = filtradas.length ? 'block' : 'none';
+    }
+
+    input.addEventListener('focus', () => renderOpciones(input.value));
+    input.addEventListener('input', () => renderOpciones(input.value));
+
+    dropdown.addEventListener('click', function(e) {
+        const item = e.target.closest('.veh-item');
+        if (!item) return;
+        const val = item.dataset.value;
+        select.value = val;
+        input.value = val ? item.textContent : '';
+        dropdown.style.display = 'none';
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!wrapper.contains(e.target)) dropdown.style.display = 'none';
+    });
+
+    select.style.display = 'none';
+    select.parentNode.insertBefore(wrapper, select);
+    wrapper.appendChild(input);
+    wrapper.appendChild(dropdown);
+})();
 </script>
 @endpush

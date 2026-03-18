@@ -350,6 +350,7 @@ class ServicioController extends Controller
         $request->validate([
             'servicio_id'  => 'required|integer',
             'direccion_id' => 'required|integer|exists:direcciones,id',
+            'condicion'    => 'nullable|string|in:ninguno,aire,baul,mascota,parrilla,transferencia,daviplata,polarizados,silla_ruedas',
         ]);
 
         $servicio = Servicio::findOrFail($request->servicio_id);
@@ -358,9 +359,14 @@ class ServicioController extends Controller
             return response()->json(['error' => true, 'mensaje' => 'No se puede modificar un servicio terminado'], 422);
         }
 
-        $servicio->update(['direccion_id' => $request->direccion_id]);
+        $datos = ['direccion_id' => $request->direccion_id, 'fecha_actualizacion' => now()];
+        if ($request->has('condicion')) {
+            $datos['condicion'] = $request->condicion;
+        }
 
-        return response()->json(['error' => false, 'mensaje' => 'Dirección actualizada']);
+        $servicio->update($datos);
+
+        return response()->json(['error' => false, 'mensaje' => 'Servicio actualizado']);
     }
 
     // ══════════════════════════════════════════════

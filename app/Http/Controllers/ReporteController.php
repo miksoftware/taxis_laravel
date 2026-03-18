@@ -36,9 +36,10 @@ class ReporteController extends Controller
         $tendencia = $this->tendenciaServicios($filtros);
         $servicios = $this->listarServicios($filtros);
         $operadores = DB::table('usuarios')->whereIn('rol', ['operador', 'administrador'])->where('estado', 'activo')->get(['id', 'nombre', 'apellidos']);
+        $vehiculos = DB::table('vehiculos')->where('estado', '!=', 'inactivo')->orderBy('numero_movil')->get(['id', 'placa', 'numero_movil']);
 
         return view('reportes.servicios', compact(
-            'filtros', 'estadisticas', 'topVehiculos', 'topOperadores', 'tendencia', 'servicios', 'operadores'
+            'filtros', 'estadisticas', 'topVehiculos', 'topOperadores', 'tendencia', 'servicios', 'operadores', 'vehiculos'
         ));
     }
 
