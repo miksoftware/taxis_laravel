@@ -19,7 +19,7 @@ class VehiculoController extends Controller
         $vehiculos = Vehiculo::with('sancionActiva')
             ->when($filtroEstado, fn($q) => $q->porEstado($filtroEstado))
             ->when($buscar, fn($q) => $q->buscar($buscar))
-            ->orderBy('numero_movil')
+            ->orderByRaw("numero_movil REGEXP '^[0-9]+$' DESC, CAST(numero_movil AS UNSIGNED), numero_movil")
             ->get();
 
         // Agregar info de sanción activa a los sancionados
@@ -185,7 +185,7 @@ class VehiculoController extends Controller
         }
 
         $vehiculos = Vehiculo::disponibles()
-            ->orderBy('numero_movil')
+            ->orderByRaw("numero_movil REGEXP '^[0-9]+$' DESC, CAST(numero_movil AS UNSIGNED), numero_movil")
             ->get(['id', 'placa', 'numero_movil']);
 
         return response()->json(['error' => false, 'vehiculos' => $vehiculos]);
