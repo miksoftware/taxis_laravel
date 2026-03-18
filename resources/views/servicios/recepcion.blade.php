@@ -447,8 +447,20 @@ document.addEventListener('DOMContentLoaded', function() {
         return { pendiente:'Pendiente', asignado:'Asignado', en_camino:'En Camino', finalizado:'Finalizado', cancelado:'Cancelado' }[e] || e;
     }
     function etiquetaCondicion(c) {
-        const map = { aire:'❄️', baul:'🧳', mascota:'🐾', parrilla:'📦', transferencia:'🏦', daviplata:'💳', polarizados:'🕶️', silla_ruedas:'♿', ninguno:'' };
-        return map[c] || c;
+        const map = {
+            aire:          { icon:'❄️', label:'Aire',          bg:'#0dcaf0', color:'#000' },
+            baul:          { icon:'🧳', label:'Baúl',          bg:'#6f42c1', color:'#fff' },
+            mascota:       { icon:'🐾', label:'Mascota',       bg:'#d63384', color:'#fff' },
+            parrilla:      { icon:'📦', label:'Parrilla',      bg:'#fd7e14', color:'#000' },
+            transferencia: { icon:'🏦', label:'Transferencia',  bg:'#198754', color:'#fff' },
+            daviplata:     { icon:'💳', label:'Daviplata',      bg:'#e6308a', color:'#fff' },
+            polarizados:   { icon:'🕶️', label:'Polarizados',   bg:'#343a40', color:'#fff' },
+            silla_ruedas:  { icon:'♿', label:'Silla de ruedas', bg:'#0d6efd', color:'#fff' },
+            ninguno:       null,
+        };
+        const item = map[c];
+        if (!item) return '';
+        return `<span class="badge" style="background:${item.bg};color:${item.color};font-size:0.73rem">${item.icon} ${item.label}</span>`;
     }
     function calcularTiempo(fecha) {
         const diff = Math.floor((Date.now() - new Date(fecha).getTime()) / 60000);
