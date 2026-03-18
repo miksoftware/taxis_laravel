@@ -446,6 +446,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // ══════════════════════════════════════════
     function renderTabla() {
         const tbody = document.getElementById('tablaServicios');
+        const contenedor = tbody.closest('.contenedor-tabla');
+        const scrollTop = contenedor ? contenedor.scrollTop : 0;
+
         let servicios = Array.from(serviciosMap.values());
 
         // Filtro
@@ -453,15 +456,16 @@ document.addEventListener('DOMContentLoaded', function() {
             servicios = servicios.filter(s => s.estado === filtroActual);
         }
 
-        // Ordenar: pendientes primero, luego por fecha desc
+        // Ordenar: pendientes primero, luego por ID asc (orden de creación, no se mueven)
         const orden = { pendiente: 0, asignado: 1, en_camino: 2 };
         servicios.sort((a, b) => {
             if (orden[a.estado] !== orden[b.estado]) return orden[a.estado] - orden[b.estado];
-            return new Date(b.fecha_solicitud) - new Date(a.fecha_solicitud);
+            return a.id - b.id;
         });
 
         if (servicios.length === 0) {
             tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted py-4">No hay servicios activos</td></tr>';
+            if (contenedor) contenedor.scrollTop = scrollTop;
             return;
         }
 
@@ -485,6 +489,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td class="text-nowrap">${acciones}</td>
             </tr>`;
         }).join('');
+
+        if (contenedor) contenedor.scrollTop = scrollTop;
     }
 
     function generarAcciones(s) {
