@@ -1,0 +1,10 @@
+vendor/
+node_modules/
+.env
+.git/
+.kiro/
+storage/logs/*
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/views/*.php
+database/database.sqlite

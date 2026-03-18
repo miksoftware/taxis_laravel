@@ -1,0 +1,50 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: taxi-diamantes-app
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    environment:
+      - APP_ENV=production
+      - APP_DEBUG=false
+    env_file:
+      - .env
+    volumes:
+      - storage_data:/var/www/html/storage
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - taxi-net
+
+  db:
+    image: mariadb:11
+    container_name: taxi-diamantes-db
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootsecret}
+      MARIADB_DATABASE: ${DB_DATABASE:-taxi_diamantes}
+      MARIADB_USER: ${DB_USERNAME:-taxi_user}
+      MARIADB_PASSWORD: ${DB_PASSWORD:-taxi_secret}
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - taxi-net
+
+volumes:
+  db_data:
+  storage_data:
+
+networks:
+  taxi-net:
+    driver: bridge
