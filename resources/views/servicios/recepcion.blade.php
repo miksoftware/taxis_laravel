@@ -456,12 +456,8 @@ document.addEventListener('DOMContentLoaded', function() {
             servicios = servicios.filter(s => s.estado === filtroActual);
         }
 
-        // Ordenar: pendientes primero, luego por ID asc (orden de creación, no se mueven)
-        const orden = { pendiente: 0, asignado: 1, en_camino: 2 };
-        servicios.sort((a, b) => {
-            if (orden[a.estado] !== orden[b.estado]) return orden[a.estado] - orden[b.estado];
-            return a.id - b.id;
-        });
+        // Ordenar solo por ID desc (el más reciente primero, posición fija)
+        servicios.sort((a, b) => b.id - a.id);
 
         if (servicios.length === 0) {
             tbody.innerHTML = '<tr><td colspan="9" class="text-center text-muted py-4">No hay servicios activos</td></tr>';

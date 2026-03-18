@@ -15,6 +15,10 @@
                 <label class="form-label small">Fecha Fin</label>
                 <input type="date" name="fecha_fin" class="form-control form-control-sm" value="{{ $filtros['fechaFin'] }}">
             </div>
+            <div class="col-md-3">
+                <label class="form-label small">Cliente (teléfono o nombre)</label>
+                <input type="text" name="buscar_cliente" class="form-control form-control-sm" placeholder="Buscar..." value="{{ $filtros['buscarCliente'] }}">
+            </div>
             <div class="col-md-3 d-flex gap-2">
                 <button type="submit" class="btn btn-sm" style="background: #1a1a2e; color: #18dff5;">
                     <i class="bi bi-funnel"></i> Filtrar

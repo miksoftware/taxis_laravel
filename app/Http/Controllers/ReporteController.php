@@ -93,8 +93,9 @@ class ReporteController extends Controller
     {
         $fechaInicio = $request->input('fecha_inicio', now()->subDays(30)->format('Y-m-d'));
         $fechaFin = $request->input('fecha_fin', now()->format('Y-m-d'));
+        $buscarCliente = $request->input('buscar_cliente', '');
 
-        $filtros = compact('fechaInicio', 'fechaFin');
+        $filtros = compact('fechaInicio', 'fechaFin', 'buscarCliente');
 
         $clientes = $this->statsClientes($filtros);
         $totales = $this->totalesClientes($clientes);
@@ -288,7 +289,7 @@ class ReporteController extends Controller
 
     private function statsClientes(array $filtros): array
     {
-        return DB::table('clientes as c')
+        $query = DB::table('clientes as c')
             ->leftJoin('servicios as s', function ($j) use ($filtros) {
                 $j->on('c.id', '=', 's.cliente_id')
                   ->whereBetween(DB::raw('DATE(s.fecha_solicitud)'), [$filtros['fechaInicio'], $filtros['fechaFin']]);
@@ -301,7 +302,17 @@ class ReporteController extends Controller
                 SUM(CASE WHEN s.estado = 'finalizado' THEN 1 ELSE 0 END) as finalizados,
                 SUM(CASE WHEN s.estado = 'cancelado' THEN 1 ELSE 0 END) as cancelados,
                 COUNT(DISTINCT d.id) as total_direcciones
-            ")
+            ");
+
+        if (!empty($filtros['buscarCliente'])) {
+            $term = $filtros['buscarCliente'];
+            $query->where(function ($q) use ($term) {
+                $q->where('c.telefono', 'like', "%{$term}%")
+                  ->orWhere('c.nombre', 'like', "%{$term}%");
+            });
+        }
+
+        return $query
             ->having('total_servicios', '>', 0)
             ->orderByDesc('total_servicios')
             ->limit(50)
