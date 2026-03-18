@@ -97,6 +97,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/operadores/exportar', [ReporteController::class, 'exportarOperadores'])->name('exportar-operadores');
         Route::get('/clientes', [ReporteController::class, 'clientes'])->name('clientes');
         Route::get('/clientes/exportar', [ReporteController::class, 'exportarClientes'])->name('exportar-clientes');
+        Route::get('/clientes/{cliente}/servicios', [ReporteController::class, 'clienteServicios'])->name('cliente-servicios');
+        Route::get('/clientes/{cliente}/direcciones', [ReporteController::class, 'clienteDirecciones'])->name('cliente-direcciones');
     });
 
     // ── Backup / Importar SQL (solo superadmin) ──

@@ -333,4 +333,48 @@ class ReporteController extends Controller
             'clientes_activos' => count($clientes),
         ];
     }
+
+    // ══════════════════════════════════════════
+    // DETALLE DE CLIENTE (JSON para modales)
+    // ══════════════════════════════════════════
+
+    public function clienteServicios(Request $request, int $cliente)
+    {
+        $fechaInicio = $request->input('fecha_inicio', '');
+        $fechaFin = $request->input('fecha_fin', '');
+        $estado = $request->input('estado', '');
+
+        $query = DB::table('servicios as s')
+            ->where('s.cliente_id', $cliente)
+            ->leftJoin('direcciones as d', 's.direccion_id', '=', 'd.id')
+            ->leftJoin('vehiculos as v', 's.vehiculo_id', '=', 'v.id')
+            ->leftJoin('usuarios as u', 's.operador_id', '=', 'u.id')
+            ->select(
+                's.id', 's.estado', 's.condicion', 's.observaciones',
+                's.fecha_solicitud', 's.fecha_asignacion', 's.fecha_fin',
+                'd.direccion', 'd.referencia',
+                'v.placa', 'v.numero_movil',
+                'u.nombre as operador_nombre'
+            );
+
+        if ($fechaInicio) $query->whereDate('s.fecha_solicitud', '>=', $fechaInicio);
+        if ($fechaFin) $query->whereDate('s.fecha_solicitud', '<=', $fechaFin);
+        if ($estado) $query->where('s.estado', $estado);
+
+        $servicios = $query->orderByDesc('s.fecha_solicitud')->limit(200)->get();
+
+        return response()->json(['error' => false, 'servicios' => $servicios]);
+    }
+
+    public function clienteDirecciones(int $cliente)
+    {
+        $direcciones = DB::table('direcciones as d')
+            ->where('d.cliente_id', $cliente)
+            ->leftJoin(DB::raw('(SELECT direccion_id, COUNT(*) as total_servicios FROM servicios GROUP BY direccion_id) as sc'), 'sc.direccion_id', '=', 'd.id')
+            ->select('d.id', 'd.direccion', 'd.referencia', 'd.es_frecuente', 'd.activa', 'd.fecha_registro', 'd.ultimo_uso', DB::raw('COALESCE(sc.total_servicios, 0) as total_servicios'))
+            ->orderByDesc('d.ultimo_uso')
+            ->get();
+
+        return response()->json(['error' => false, 'direcciones' => $direcciones]);
+    }
 }
