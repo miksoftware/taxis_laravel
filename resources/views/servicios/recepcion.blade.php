@@ -501,7 +501,7 @@ document.addEventListener('DOMContentLoaded', function() {
         tbody.innerHTML = servicios.map(s => {
             const condLabel = etiquetaCondicion(s.condicion);
             const vehiculoTxt = s.placa
-                ? `${s.numero_movil} <small class="text-muted">(${s.placa})</small>${s.tipo_vehiculo === 'proximo' ? '<br><span class="badge" style="font-size:0.68rem;background:#dc3545;color:#fff">Próximo</span>' : '<br><span class="badge" style="font-size:0.68rem;background:#ffc107;color:#000">Único</span>'}`
+                ? `${s.numero_movil} <small class="text-muted">(${s.placa})</small>${s.tipo_vehiculo === 'proximo' ? '<br><span class="badge" style="font-size:0.68rem;background:#ffc107;color:#000">Próximo</span>' : '<br><span class="badge" style="font-size:0.68rem;background:#dc3545;color:#fff">Único</span>'}`
                 : '<span class="text-muted">Sin asignar</span>';
             const tiempo = calcularTiempo(s.fecha_solicitud);
             const acciones = generarAcciones(s);
