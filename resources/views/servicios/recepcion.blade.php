@@ -501,7 +501,7 @@ document.addEventListener('DOMContentLoaded', function() {
         tbody.innerHTML = servicios.map(s => {
             const condLabel = etiquetaCondicion(s.condicion);
             const vehiculoTxt = s.placa
-                ? `${s.numero_movil} <small class="text-muted">(${s.placa})</small>${s.tipo_vehiculo === 'proximo' ? '<br><span class="badge" style="font-size:0.68rem;background:#495057;color:#fff">Próximo</span>' : '<br><span class="badge" style="font-size:0.68rem;background:#adb5bd;color:#000">Único</span>'}`
+                ? `${s.numero_movil} <small class="text-muted">(${s.placa})</small>${s.tipo_vehiculo === 'proximo' ? '<br><span class="badge" style="font-size:0.68rem;background:#dc3545;color:#fff">Próximo</span>' : '<br><span class="badge" style="font-size:0.68rem;background:#ffc107;color:#000">Único</span>'}`
                 : '<span class="text-muted">Sin asignar</span>';
             const tiempo = calcularTiempo(s.fecha_solicitud);
             const acciones = generarAcciones(s);
@@ -599,26 +599,27 @@ document.addEventListener('DOMContentLoaded', function() {
         if (val.length < 3) { dropdown.classList.add('d-none'); return; }
 
         buscarTimeout = setTimeout(async () => {
-            try {
-                // Primero buscar coincidencia exacta
-                const res = await fetch('{{ route("clientes.buscar-telefono") }}?telefono=' + encodeURIComponent(val));
-                const data = await res.json();
-                if (data.cliente_existe) {
-                    seleccionarCliente(data.cliente);
-                    dropdown.classList.add('d-none');
-                    return;
-                }
+            // Verificar que el valor no cambió mientras esperábamos
+            const valorActual = inputTel.value.trim();
+            if (valorActual !== val) return;
 
-                // Si no hay exacta, buscar sugerencias por autocompletar
-                const res2 = await fetch('{{ route("clientes.autocompletar") }}?q=' + encodeURIComponent(val));
-                const sugerencias = await res2.json();
+            try {
+                // Buscar sugerencias por autocompletar
+                const res = await fetch('{{ route("clientes.autocompletar") }}?q=' + encodeURIComponent(val));
+                const sugerencias = await res.json();
+
+                // Verificar de nuevo que el input no cambió durante el fetch
+                if (inputTel.value.trim() !== val) return;
 
                 if (sugerencias.length > 0) {
-                    dropdown.innerHTML = sugerencias.map(c =>
-                        `<div class="item" onclick="seleccionarClienteDesdeDropdown(${c.id}, '${escapeHtml(c.telefono)}', '${escapeHtml(c.nombre || '')}')">
+                    // Si hay coincidencia exacta de teléfono, mostrarla destacada pero NO auto-seleccionar
+                    dropdown.innerHTML = sugerencias.map(c => {
+                        const esExacto = c.telefono === val;
+                        return `<div class="item ${esExacto ? 'fw-bold' : ''}" onclick="seleccionarClienteDesdeDropdown(${c.id}, '${escapeHtml(c.telefono)}', '${escapeHtml(c.nombre || '')}')">
                             <strong>${c.telefono}</strong> - ${c.nombre || 'Sin nombre'}
-                        </div>`
-                    ).join('');
+                            ${esExacto ? '<i class="bi bi-check-circle text-success ms-1"></i>' : ''}
+                        </div>`;
+                    }).join('');
                     dropdown.classList.remove('d-none');
                 } else {
                     // No encontrado — ofrecer crear
@@ -628,7 +629,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     dropdown.classList.remove('d-none');
                 }
             } catch (e) { console.error(e); }
-        }, 300);
+        }, 400);
     });
 
     // Cerrar dropdown al hacer clic fuera
