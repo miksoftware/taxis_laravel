@@ -9,22 +9,43 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     @stack('styles')
     <style>
+        :root {
+            --brand-navy: #0a2540;
+            --brand-navy-dark: #071a33;
+            --brand-blue: #0284c7;
+            --brand-blue-dark: #0052cc;
+            --brand-cyan: #38bdf8;
+            --brand-sky-light: #e0f2fe;
+            --brand-border: rgba(186, 230, 253, 0.7);
+        }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: #1e293b;
+        }
         .sidebar {
             min-height: 100vh;
             position: relative;
-            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            background: linear-gradient(180deg, #071a33 0%, #0c2b54 50%, #0a2540 100%);
+            box-shadow: 4px 0 20px rgba(7, 26, 51, 0.15);
         }
         .sidebar .nav-link {
-            color: rgba(255,255,255,0.7);
+            color: rgba(224, 242, 254, 0.75);
             padding: 0.75rem 1.25rem;
-            border-radius: 8px;
-            margin: 2px 8px;
-            transition: all 0.2s;
+            border-radius: 10px;
+            margin: 3px 10px;
+            transition: all 0.2s ease;
+            font-weight: 500;
         }
-        .sidebar .nav-link:hover,
+        .sidebar .nav-link:hover {
+            color: #ffffff;
+            background: rgba(56, 189, 248, 0.14);
+            transform: translateX(2px);
+        }
         .sidebar .nav-link.active {
-            color: #1a1a2e;
-            background: #18dff5;
+            color: #ffffff;
+            background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.38);
+            font-weight: 600;
         }
         .sidebar .nav-link i {
             width: 24px;
@@ -32,20 +53,96 @@
             margin-right: 8px;
         }
         .sidebar-brand {
-            color: #18dff5;
+            color: #38bdf8;
             font-weight: 700;
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             padding: 1.25rem;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(56, 189, 248, 0.15);
+            text-shadow: 0 0 16px rgba(56, 189, 248, 0.35);
+            letter-spacing: 0.5px;
         }
         .main-content {
-            background-color: #f4f6f9;
+            background-color: #f8fafc;
+            background-image: 
+                radial-gradient(1000px 600px at top right, rgba(186, 230, 253, 0.45), transparent 70%),
+                radial-gradient(800px 500px at bottom left, rgba(224, 242, 254, 0.55), transparent 70%),
+                radial-gradient(600px 400px at 50% 50%, rgba(240, 249, 255, 0.35), transparent 70%);
             min-height: 100vh;
         }
         .top-bar {
-            background: white;
-            border-bottom: 1px solid #e9ecef;
-            padding: 0.75rem 1.5rem;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(186, 230, 253, 0.75);
+            padding: 0.85rem 1.75rem;
+            box-shadow: 0 2px 10px rgba(2, 132, 199, 0.04);
+        }
+        .top-bar h5 {
+            color: var(--brand-navy);
+            font-weight: 700;
+        }
+
+        /* Estilos globales de componentes de marca */
+        .btn-primary {
+            background: linear-gradient(135deg, #0284c7 0%, #0052cc 100%) !important;
+            border: none !important;
+            color: #ffffff !important;
+            font-weight: 600;
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.28);
+            transition: all 0.2s ease;
+        }
+        .btn-primary:hover, .btn-primary:focus {
+            background: linear-gradient(135deg, #0369a1 0%, #0046b3 100%) !important;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(2, 132, 199, 0.38);
+        }
+        .btn-outline-primary {
+            color: #0284c7 !important;
+            border-color: #38bdf8 !important;
+            font-weight: 600;
+        }
+        .btn-outline-primary:hover {
+            background: linear-gradient(135deg, #0284c7, #0052cc) !important;
+            border-color: transparent !important;
+            color: #ffffff !important;
+        }
+        .card {
+            border: 1px solid rgba(186, 230, 253, 0.65) !important;
+            border-radius: 14px;
+            box-shadow: 0 8px 25px -5px rgba(2, 132, 199, 0.07);
+        }
+        .badge.bg-primary {
+            background: linear-gradient(135deg, #0284c7, #0052cc) !important;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: #38bdf8 !important;
+            box-shadow: 0 0 0 0.25rem rgba(56, 189, 248, 0.22) !important;
+        }
+        .modal-content {
+            border-radius: 16px;
+            border: 1px solid rgba(186, 230, 253, 0.7);
+            box-shadow: 0 20px 40px -15px rgba(2, 132, 199, 0.18);
+            overflow: hidden;
+        }
+        .page-item.active .page-link {
+            background: linear-gradient(135deg, #0284c7, #0052cc) !important;
+            border-color: transparent !important;
+        }
+        .page-link {
+            color: #0284c7;
+        }
+        ::-webkit-scrollbar {
+            width: 7px;
+            height: 7px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #bae6fd;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #38bdf8;
         }
     </style>
 </head>
@@ -111,16 +208,18 @@
                     @endif
                 </ul>
 
-                <div class="p-3" style="position: absolute; bottom: 0; width: 100%;">
-                    <div class="text-white-50 small px-2 mb-2">
-                        <i class="bi bi-person-circle me-1"></i>
-                        {{ auth()->user()->nombreCompleto() }}
+                <div class="p-3" style="position: absolute; bottom: 0; width: 100%; border-top: 1px solid rgba(56, 189, 248, 0.12);">
+                    <div class="small px-2 mb-2" style="color: rgba(224, 242, 254, 0.85);">
+                        <i class="bi bi-person-circle me-1" style="color: #38bdf8;"></i>
+                        <span class="fw-semibold">{{ auth()->user()->nombreCompleto() }}</span>
                         <br>
-                        <span class="badge bg-warning text-dark mt-1">{{ ucfirst(auth()->user()->rol) }}</span>
+                        <span class="badge mt-1" style="background: rgba(56, 189, 248, 0.18); color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.35); font-weight: 500;">
+                            {{ ucfirst(auth()->user()->rol) }}
+                        </span>
                     </div>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="btn btn-outline-light btn-sm w-100">
+                        <button type="submit" class="btn btn-sm w-100" style="border: 1px solid rgba(56, 189, 248, 0.35); color: #e0f2fe; background: rgba(56, 189, 248, 0.08); transition: all 0.2s;" onmouseover="this.style.background='rgba(56, 189, 248, 0.2)'; this.style.color='#ffffff';" onmouseout="this.style.background='rgba(56, 189, 248, 0.08)'; this.style.color='#e0f2fe';">
                             <i class="bi bi-box-arrow-left me-1"></i> Cerrar Sesión
                         </button>
                     </form>

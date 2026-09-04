@@ -14,14 +14,23 @@ class ClienteController extends Controller
     public function index(Request $request)
     {
         $filtro = $request->input('buscar', '');
+        $perPage = $request->input('per_page', 10);
 
-        $clientes = Cliente::when($filtro, fn($q) => $q->buscar($filtro))
+        $query = Cliente::when($filtro, fn($q) => $q->buscar($filtro))
             ->withCount('direccionesActivas')
-            ->orderByDesc('id')
-            ->paginate(15)
-            ->appends(['buscar' => $filtro]);
+            ->orderByDesc('id');
 
-        return view('clientes.index', compact('clientes', 'filtro'));
+        if ($perPage === 'todos' || $perPage == -1) {
+            $totalCount = (clone $query)->count();
+            $limit = min($totalCount, 2000);
+            if ($limit <= 0) $limit = 10;
+        } else {
+            $limit = in_array((int)$perPage, [10, 20, 30, 50]) ? (int)$perPage : 10;
+        }
+
+        $clientes = $query->paginate($limit)->appends($request->query());
+
+        return view('clientes.index', compact('clientes', 'filtro', 'perPage'));
     }
 
     /**

@@ -5,80 +5,111 @@
 @push('styles')
 <style>
     body {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        background-color: #f0f7ff;
+        background-image: 
+            radial-gradient(1000px 600px at top left, rgba(186, 230, 253, 0.6) 0%, transparent 60%),
+            radial-gradient(800px 500px at top right, rgba(224, 242, 254, 0.7) 0%, transparent 60%),
+            radial-gradient(900px 600px at bottom right, rgba(186, 230, 253, 0.5) 0%, transparent 60%),
+            radial-gradient(700px 500px at bottom left, rgba(219, 234, 254, 0.6) 0%, transparent 60%),
+            linear-gradient(135deg, #f0f7ff 0%, #e2effe 50%, #f4f9fd 100%);
         min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     }
 
     .login-container {
-        max-width: 900px;
+        max-width: 920px;
         width: 100%;
-        border-radius: 20px;
+        border-radius: 24px;
         overflow: hidden;
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 25px 60px -15px rgba(2, 132, 199, 0.18), 0 0 0 1px rgba(186, 230, 253, 0.7);
+        border: none;
     }
 
     .form-side {
-        padding: 3rem;
+        padding: 3.5rem;
     }
 
     .image-side {
-        background: linear-gradient(135deg, #18dff5 0%, #e6b800 50%, #d4a800 100%);
+        background: linear-gradient(145deg, #38bdf8 0%, #0284c7 45%, #0052cc 100%);
         display: flex;
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        padding: 3rem;
+        padding: 3.5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .image-side::before {
+        content: '';
+        position: absolute;
+        width: 320px;
+        height: 320px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
+        top: -60px;
+        right: -60px;
+        pointer-events: none;
     }
 
     .image-side i {
-        font-size: 4rem;
-        color: #1a1a2e;
+        font-size: 4.5rem;
+        color: #ffffff;
+        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.12));
     }
 
     .image-side h3 {
-        color: #1a1a2e;
-        font-weight: 700;
-        margin-top: 1rem;
+        color: #ffffff;
+        font-weight: 800;
+        margin-top: 1.25rem;
+        letter-spacing: 0.5px;
     }
 
     .image-side p {
-        color: #2d2d44;
+        color: rgba(255, 255, 255, 0.9);
         font-size: 0.95rem;
     }
 
     .form-side h2 {
-        color: #1a1a2e;
-        font-weight: 700;
+        color: #0a2540;
+        font-weight: 800;
     }
 
     .btn-primary {
-        background: linear-gradient(135deg, #18dff5, #e6b800);
+        background: linear-gradient(135deg, #0284c7 0%, #0052cc 100%);
         border: none;
-        color: #1a1a2e;
+        color: #ffffff;
         font-weight: 600;
-        padding: 12px;
+        padding: 13px;
+        border-radius: 12px;
         transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);
     }
 
     .btn-primary:hover {
-        background: linear-gradient(135deg, #e6b800, #d4a800);
-        color: #1a1a2e;
+        background: linear-gradient(135deg, #0369a1 0%, #0046b3 100%);
+        color: #ffffff;
         transform: translateY(-1px);
-        box-shadow: 0 4px 15px rgba(245, 197, 24, 0.4);
+        box-shadow: 0 6px 20px rgba(2, 132, 199, 0.42);
     }
 
     .input-group-text {
-        background-color: #f8f9fa;
+        background-color: #f8fafc;
         border-right: none;
+        border-color: #cbd5e1;
+        color: #64748b;
+    }
+
+    .form-control {
+        border-color: #cbd5e1;
     }
 
     .form-control:focus {
-        border-color: #18dff5;
-        box-shadow: 0 0 0 0.2rem rgba(245, 197, 24, 0.25);
+        border-color: #38bdf8;
+        box-shadow: 0 0 0 0.25rem rgba(56, 189, 248, 0.25);
     }
 
     .input-group .form-control {
@@ -86,16 +117,18 @@
     }
 
     .form-check-input:checked {
-        background-color: #18dff5;
-        border-color: #18dff5;
+        background-color: #0284c7;
+        border-color: #0284c7;
     }
 
     a {
-        color: #e6b800;
+        color: #0284c7;
+        text-decoration: none;
     }
 
     a:hover {
-        color: #d4a800;
+        color: #0052cc;
+        text-decoration: underline;
     }
 </style>
 @endpush
@@ -182,7 +215,7 @@
                 <i class="bi bi-taxi-front mb-3"></i>
                 <h3>Taxi Diamantes</h3>
                 <p>Sistema de Gestión de Servicios</p>
-                <hr class="my-4" style="border-color: #1a1a2e; opacity: 0.3;">
+                <hr class="my-4" style="border-color: rgba(255, 255, 255, 0.35);">
                 <p class="small">La mejor opción para tus viajes</p>
             </div>
         </div>

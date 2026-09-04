@@ -15,12 +15,23 @@ class VehiculoController extends Controller
     {
         $filtroEstado = $request->input('estado', '');
         $buscar = $request->input('buscar', '');
+        $perPage = $request->input('per_page', 10);
 
-        $vehiculos = Vehiculo::with('sancionActiva')
+        $query = Vehiculo::with('sancionActiva')
             ->when($filtroEstado, fn($q) => $q->porEstado($filtroEstado))
             ->when($buscar, fn($q) => $q->buscar($buscar))
-            ->orderByRaw("numero_movil REGEXP '^[0-9]+$' DESC, CAST(numero_movil AS UNSIGNED), numero_movil")
-            ->get();
+            ->orderByRaw("numero_movil REGEXP '^[0-9]+$' DESC, CAST(numero_movil AS UNSIGNED), numero_movil");
+
+        $estadisticas = Vehiculo::estadisticas();
+
+        if ($perPage === 'todos' || $perPage == -1) {
+            $total = (clone $query)->count();
+            $limit = max($total, 1);
+        } else {
+            $limit = in_array((int)$perPage, [10, 20, 30, 50]) ? (int)$perPage : 10;
+        }
+
+        $vehiculos = $query->paginate($limit)->appends($request->query());
 
         // Agregar info de sanción activa a los sancionados
         $vehiculos->each(function ($v) {
@@ -29,9 +40,7 @@ class VehiculoController extends Controller
             }
         });
 
-        $estadisticas = Vehiculo::estadisticas();
-
-        return view('vehiculos.index', compact('vehiculos', 'estadisticas', 'filtroEstado', 'buscar'));
+        return view('vehiculos.index', compact('vehiculos', 'estadisticas', 'filtroEstado', 'buscar', 'perPage'));
     }
 
     /**

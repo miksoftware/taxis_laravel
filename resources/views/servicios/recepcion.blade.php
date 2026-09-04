@@ -5,59 +5,255 @@
 
 @push('styles')
 <style>
-    .metric-card {
-        border-radius: 12px;
-        padding: 12px 16px;
-        color: white;
-        text-align: center;
-        transition: transform 0.15s;
+    /* Tarjetas KPI de Recepción Uniformes y Minimalistas */
+    .metric-kpi-card {
+        background: #ffffff;
+        border: 1px solid rgba(186, 230, 253, 0.75);
+        border-radius: 16px;
+        padding: 16px 18px;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 4px 16px -2px rgba(2, 132, 199, 0.05);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+        min-height: 138px;
+        position: relative;
     }
-    .metric-card:hover { transform: translateY(-2px); }
-    .metric-card .metric-num { font-size: 1.8rem; font-weight: 700; line-height: 1; }
-    .metric-card .metric-label { font-size: 0.75rem; opacity: 0.9; }
+    .metric-kpi-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 28px -4px rgba(2, 132, 199, 0.12);
+        border-color: #38bdf8 !important;
+    }
+    .metric-kpi-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .metric-kpi-label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: #64748b;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+        margin: 0;
+    }
+    .metric-kpi-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.05rem;
+    }
+    .icon-blue { background: #e0f2fe; color: #0284c7; }
+    .icon-amber { background: #fef3c7; color: #f59e0b; }
+    .icon-cyan { background: #e0f7fa; color: #0097a7; }
+    .icon-green { background: #dcfce7; color: #10b981; }
+    .icon-red { background: #fee2e2; color: #ef4444; }
 
-    .bg-pendiente { background: linear-gradient(135deg, #18dff5, #e6a800); }
-    .bg-asignado { background: linear-gradient(135deg, #17a2b8, #138496); }
-    .bg-encamino { background: linear-gradient(135deg, #0d6efd, #0a58ca); }
-    .bg-finalizado { background: linear-gradient(135deg, #198754, #146c43); }
-    .bg-cancelado { background: linear-gradient(135deg, #dc3545, #b02a37); }
-    .bg-total-serv { background: linear-gradient(135deg, #1a1a2e, #16213e); }
+    .metric-kpi-body {
+        margin: 8px 0 6px 0;
+    }
+    .metric-num {
+        font-size: 2.15rem;
+        font-weight: 800;
+        color: #0a2540;
+        line-height: 1;
+        letter-spacing: -0.5px;
+    }
+    .metric-kpi-footer {
+        display: flex;
+        align-items: center;
+        height: 24px;
+    }
+    .metric-kpi-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 3px 8px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 0.72rem;
+    }
+    .pill-blue { background: #f0f9ff; color: #0284c7; border: 1px solid #bae6fd; }
+    .pill-amber { background: #fffbeb; color: #d97706; border: 1px solid #fde68a; }
+    .pill-cyan { background: #ecfeff; color: #0891b2; border: 1px solid #a5f3fc; }
+    .pill-green { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
+    .pill-red { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+
+    /* Tarjetas del Dashboard / Recepción Modernas */
+    .card-modern {
+        background: #ffffff;
+        border: 1px solid rgba(186, 230, 253, 0.75) !important;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px -2px rgba(2, 132, 199, 0.05);
+        overflow: hidden;
+    }
+    .card-header-modern {
+        background: #ffffff;
+        padding: 14px 20px;
+        border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+    .card-title-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .card-icon-circle {
+        width: 32px;
+        height: 32px;
+        border-radius: 9px;
+        background: #e0f2fe;
+        color: #0284c7;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.95rem;
+    }
+    .card-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #0a2540;
+        margin: 0;
+    }
+    .card-subtitle {
+        font-size: 0.75rem;
+        color: #64748b;
+        margin: 0;
+    }
 
     /* Panel de creación rápida */
     .panel-crear {
         background: white;
-        border: 2px solid #18dff5;
-        border-radius: 12px;
-        padding: 20px;
+        border: 1px solid rgba(186, 230, 253, 0.75);
+        border-radius: 16px;
+        padding: 18px 22px;
         margin-bottom: 20px;
+        box-shadow: 0 4px 20px -2px rgba(2, 132, 199, 0.05);
     }
-    .panel-crear .form-label { font-weight: 600; font-size: 0.85rem; margin-bottom: 4px; }
+    .panel-crear .form-label {
+        font-weight: 700;
+        font-size: 0.72rem;
+        margin-bottom: 5px;
+        color: #475569;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .panel-crear .form-control,
+    .panel-crear .form-select {
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        font-size: 0.82rem;
+        transition: all 0.2s ease;
+    }
+    .panel-crear .form-control:focus,
+    .panel-crear .form-select:focus {
+        border-color: #0284c7;
+        box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    }
+    #btnNuevaDireccion {
+        border-radius: 0 8px 8px 0;
+        border-color: #0284c7;
+        color: #0284c7;
+    }
+    #btnNuevaDireccion:hover:not(:disabled) {
+        background: #0284c7;
+        color: #ffffff;
+    }
+
+    #btnCrear {
+        background: linear-gradient(135deg, #0284c7 0%, #0052cc 100%) !important;
+        border: none !important;
+        color: #ffffff !important;
+        box-shadow: 0 4px 14px rgba(2, 132, 199, 0.28);
+        border-radius: 8px;
+        font-weight: 700;
+        padding: 6px 12px;
+        transition: all 0.2s ease;
+    }
+    #btnCrear:hover:not(:disabled) {
+        background: linear-gradient(135deg, #0369a1 0%, #0046b3 100%) !important;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(2, 132, 199, 0.38);
+    }
+    #btnCrear:disabled {
+        background: #e2e8f0 !important;
+        color: #94a3b8 !important;
+        box-shadow: none !important;
+        opacity: 0.65;
+        cursor: not-allowed;
+    }
 
     /* Tabla de servicios */
-    .tabla-servicios { font-size: 0.85rem; }
-    .tabla-servicios th { background: #1a1a2e; color: #18dff5; font-size: 0.78rem; text-transform: uppercase; white-space: nowrap; }
-    .tabla-servicios td { vertical-align: middle; padding: 6px 10px; }
-    .tabla-servicios tr { transition: background 0.2s; }
+    .tabla-servicios { font-size: 0.84rem; }
+    .tabla-servicios th {
+        background: #f8fafc !important;
+        color: #475569 !important;
+        font-size: 0.73rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        white-space: nowrap;
+        border-bottom: 1px solid #e2e8f0 !important;
+        border-top: none !important;
+        padding: 11px 12px;
+    }
+    .tabla-servicios td {
+        vertical-align: middle;
+        padding: 10px 12px;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .tabla-servicios tr { transition: background 0.15s ease; }
+    .tabla-servicios tr:hover { background-color: #f0f9ff !important; }
     .tabla-servicios tr.fila-nueva { animation: resaltar 2s ease-out; }
     .tabla-servicios tr.fila-actualizada { animation: resaltarAzul 1.5s ease-out; }
 
     @keyframes resaltar {
-        0% { background-color: #fff3cd; }
+        0% { background-color: #fef3c7; }
         100% { background-color: transparent; }
     }
     @keyframes resaltarAzul {
-        0% { background-color: #cfe2ff; }
+        0% { background-color: #e0f2fe; }
         100% { background-color: transparent; }
     }
 
-    .btn-accion { padding: 2px 8px; font-size: 0.75rem; border-radius: 6px; }
-    .badge-estado { font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; }
+    .btn-accion {
+        width: 30px;
+        height: 30px;
+        padding: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.82rem;
+        border-radius: 8px;
+        transition: all 0.15s ease;
+    }
+    .btn-accion:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+    }
+    .badge-estado {
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 5px 12px;
+        border-radius: 20px;
+        letter-spacing: 0.3px;
+    }
+    .badge-estado.bg-warning { background: #fffbeb !important; color: #b45309 !important; border: 1px solid #fde68a; }
+    .badge-estado.bg-info { background: #f0f9ff !important; color: #0284c7 !important; border: 1px solid #bae6fd; }
+    .badge-estado.bg-primary { background: #eff6ff !important; color: #1d4ed8 !important; border: 1px solid #bfdbfe; }
+    .badge-estado.bg-success { background: #f0fdf4 !important; color: #15803d !important; border: 1px solid #bbf7d0; }
+    .badge-estado.bg-danger { background: #fef2f2 !important; color: #b91c1c !important; border: 1px solid #fecaca; }
 
     /* Indicador de conexión */
-    .conexion-indicator { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-    .conexion-ok { background: #198754; box-shadow: 0 0 6px #198754; }
-    .conexion-error { background: #dc3545; box-shadow: 0 0 6px #dc3545; }
-    .conexion-reconectando { background: #18dff5; animation: parpadeo 1s infinite; }
+    .conexion-indicator { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+    .conexion-ok { background: #10b981; box-shadow: 0 0 6px #10b981; }
+    .conexion-error { background: #ef4444; box-shadow: 0 0 6px #ef4444; }
+    .conexion-reconectando { background: #38bdf8; animation: parpadeo 1s infinite; }
 
     @keyframes parpadeo {
         0%, 100% { opacity: 1; }
@@ -69,41 +265,126 @@
         position: absolute;
         z-index: 1050;
         background: white;
-        border: 1px solid #dee2e6;
-        border-radius: 8px;
+        border: 1px solid #bae6fd;
+        border-radius: 10px;
         max-height: 200px;
         overflow-y: auto;
         width: 100%;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        box-shadow: 0 8px 24px rgba(2, 132, 199, 0.12);
     }
     .autocomplete-dropdown .item {
-        padding: 8px 12px;
+        padding: 9px 14px;
         cursor: pointer;
-        border-bottom: 1px solid #f0f0f0;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 0.84rem;
     }
-    .autocomplete-dropdown .item:hover { background: #18dff5; color: #1a1a2e; }
+    .autocomplete-dropdown .item:hover { background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%); color: #ffffff; }
 
     .contenedor-tabla { max-height: 55vh; overflow-y: auto; }
 </style>
 @endpush
 
 @section('content')
-{{-- Métricas del día --}}
-<div class="row g-2 mb-3">
-    <div class="col"><div class="metric-card bg-total-serv"><div class="metric-num" id="m-total">{{ $metricas['total'] }}</div><div class="metric-label">Hoy</div></div></div>
-    <div class="col"><div class="metric-card bg-pendiente"><div class="metric-num" id="m-pendientes">{{ $metricas['pendientes'] }}</div><div class="metric-label">Pendientes</div></div></div>
-    <div class="col"><div class="metric-card bg-asignado"><div class="metric-num" id="m-asignados">{{ $metricas['asignados'] }}</div><div class="metric-label">Asignados</div></div></div>
-    <div class="col"><div class="metric-card bg-finalizado"><div class="metric-num" id="m-finalizados">{{ $metricas['finalizados'] }}</div><div class="metric-label">Finalizados</div></div></div>
-    <div class="col"><div class="metric-card bg-cancelado"><div class="metric-num" id="m-cancelados">{{ $metricas['cancelados'] }}</div><div class="metric-label">Cancelados</div></div></div>
+{{-- Encabezado con título moderno --}}
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+    <div>
+        <h4 class="fw-bold mb-1" style="color: #0a2540; letter-spacing: -0.3px;">Centro de Recepción</h4>
+        <p class="text-muted small mb-0"><i class="bi bi-headset text-primary me-1"></i> Despacho inmediato y seguimiento en tiempo real</p>
+    </div>
+</div>
+
+{{-- Métricas del día Uniformes y Minimalistas --}}
+<div class="row row-cols-2 row-cols-md-5 g-3 mb-4">
+    {{-- 1. Hoy --}}
+    <div class="col">
+        <div class="metric-kpi-card">
+            <div class="metric-kpi-header">
+                <span class="metric-kpi-label">Hoy</span>
+                <div class="metric-kpi-icon icon-blue"><i class="bi bi-calendar-check"></i></div>
+            </div>
+            <div class="metric-kpi-body">
+                <div class="metric-num" id="m-total">{{ $metricas['total'] }}</div>
+            </div>
+            <div class="metric-kpi-footer">
+                <span class="metric-kpi-pill pill-blue"><i class="bi bi-headset me-1"></i> Total servicios</span>
+            </div>
+        </div>
+    </div>
+    {{-- 2. Pendientes --}}
+    <div class="col">
+        <div class="metric-kpi-card">
+            <div class="metric-kpi-header">
+                <span class="metric-kpi-label">Pendientes</span>
+                <div class="metric-kpi-icon icon-amber"><i class="bi bi-hourglass-split"></i></div>
+            </div>
+            <div class="metric-kpi-body">
+                <div class="metric-num" id="m-pendientes">{{ $metricas['pendientes'] }}</div>
+            </div>
+            <div class="metric-kpi-footer">
+                <span class="metric-kpi-pill pill-amber"><i class="bi bi-clock-history me-1"></i> Por despachar</span>
+            </div>
+        </div>
+    </div>
+    {{-- 3. Asignados --}}
+    <div class="col">
+        <div class="metric-kpi-card">
+            <div class="metric-kpi-header">
+                <span class="metric-kpi-label">Asignados</span>
+                <div class="metric-kpi-icon icon-cyan"><i class="bi bi-truck"></i></div>
+            </div>
+            <div class="metric-kpi-body">
+                <div class="metric-num" id="m-asignados">{{ $metricas['asignados'] }}</div>
+            </div>
+            <div class="metric-kpi-footer">
+                <span class="metric-kpi-pill pill-cyan"><i class="bi bi-geo-alt me-1"></i> En camino</span>
+            </div>
+        </div>
+    </div>
+    {{-- 4. Finalizados --}}
+    <div class="col">
+        <div class="metric-kpi-card">
+            <div class="metric-kpi-header">
+                <span class="metric-kpi-label">Finalizados</span>
+                <div class="metric-kpi-icon icon-green"><i class="bi bi-check2-circle"></i></div>
+            </div>
+            <div class="metric-kpi-body">
+                <div class="metric-num" id="m-finalizados">{{ $metricas['finalizados'] }}</div>
+            </div>
+            <div class="metric-kpi-footer">
+                <span class="metric-kpi-pill pill-green"><i class="bi bi-check-all me-1"></i> Completados</span>
+            </div>
+        </div>
+    </div>
+    {{-- 5. Cancelados --}}
+    <div class="col">
+        <div class="metric-kpi-card">
+            <div class="metric-kpi-header">
+                <span class="metric-kpi-label">Cancelados</span>
+                <div class="metric-kpi-icon icon-red"><i class="bi bi-x-circle"></i></div>
+            </div>
+            <div class="metric-kpi-body">
+                <div class="metric-num" id="m-cancelados">{{ $metricas['cancelados'] }}</div>
+            </div>
+            <div class="metric-kpi-footer">
+                <span class="metric-kpi-pill pill-red"><i class="bi bi-slash-circle me-1"></i> Anulados</span>
+            </div>
+        </div>
+    </div>
 </div>
 
 {{-- Panel de creación rápida --}}
 <div class="panel-crear">
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h6 class="mb-0"><i class="bi bi-plus-circle me-1"></i> Nuevo Servicio</h6>
-        <div>
+        <div class="d-flex align-items-center gap-2">
+            <div class="card-icon-circle"><i class="bi bi-plus-circle-fill"></i></div>
+            <div>
+                <h6 class="mb-0 fw-bold" style="color: #0a2540; font-size: 0.95rem;">Nuevo Servicio</h6>
+                <small class="text-muted" style="font-size: 0.75rem;">Despacho rápido y asignación de carrera</small>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-2 bg-light px-3 py-1 rounded-pill" style="border: 1px solid rgba(186, 230, 253, 0.6);">
             <span class="conexion-indicator conexion-ok" id="indicadorConexion" title="Conectado"></span>
-            <small class="text-muted ms-1" id="estadoConexion">Conectado</small>
+            <small class="fw-semibold text-secondary" id="estadoConexion" style="font-size: 0.75rem;">Conectado</small>
         </div>
     </div>
     <form id="formNuevoServicio" autocomplete="off">
@@ -157,8 +438,8 @@
             </div>
             {{-- Botón --}}
             <div class="col-md-1">
-                <button type="submit" class="btn btn-warning btn-sm w-100 fw-bold" id="btnCrear" disabled>
-                    <i class="bi bi-send"></i> Crear
+                <button type="submit" class="btn btn-sm w-100 fw-bold" id="btnCrear" disabled>
+                    <i class="bi bi-send me-1"></i> Crear
                 </button>
             </div>
         </div>
@@ -166,11 +447,18 @@
 </div>
 
 {{-- Tabla de servicios activos --}}
-<div class="card border-0 shadow-sm">
-    <div class="card-header bg-white d-flex justify-content-between align-items-center py-2">
-        <span class="fw-bold"><i class="bi bi-list-ul me-1"></i> Servicios Activos</span>
-        <div>
-            <select class="form-select form-select-sm d-inline-block" style="width:auto" id="filtroEstado">
+<div class="card card-modern">
+    <div class="card-header-modern">
+        <div class="card-title-wrap">
+            <div class="card-icon-circle"><i class="bi bi-list-task"></i></div>
+            <div>
+                <h6 class="card-title">Servicios Activos</h6>
+                <p class="card-subtitle">Listado de carreras en curso y en espera</p>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <label for="filtroEstado" class="small text-muted mb-0 me-1 d-none d-sm-inline">Filtrar:</label>
+            <select class="form-select form-select-sm rounded-pill" style="width: auto; min-width: 140px; font-weight: 600; font-size: 0.78rem; border-color: #cbd5e1;" id="filtroEstado">
                 <option value="todos">Todos activos</option>
                 <option value="pendiente">Pendientes</option>
                 <option value="asignado">Asignados</option>
@@ -178,22 +466,24 @@
         </div>
     </div>
     <div class="contenedor-tabla">
-        <table class="table table-hover tabla-servicios mb-0">
+        <table class="table table-hover tabla-servicios mb-0 align-middle">
             <thead class="sticky-top">
                 <tr>
-                    <th>#</th>
-                    <th>Teléfono</th>
-                    <th>Dirección</th>
-                    <th>Condición</th>
-                    <th>Vehículo</th>
-                    <th>Estado</th>
-                    <th>Tiempo</th>
-                    <th>Operador</th>
-                    <th>Acciones</th>
+                    <th class="ps-3 py-2">#</th>
+                    <th class="py-2">Teléfono / Cliente</th>
+                    <th class="py-2">Dirección</th>
+                    <th class="py-2">Condición</th>
+                    <th class="py-2">Vehículo</th>
+                    <th class="py-2 text-center">Estado</th>
+                    <th class="py-2 text-center">Tiempo</th>
+                    <th class="py-2">Operador</th>
+                    <th class="pe-3 py-2 text-center">Acciones</th>
                 </tr>
             </thead>
             <tbody id="tablaServicios">
-                <tr><td colspan="9" class="text-center text-muted py-4">Cargando servicios...</td></tr>
+                <tr><td colspan="9" class="text-center text-muted py-5">
+                    <div class="spinner-border spinner-border-sm text-primary me-2"></div> Cargando servicios...
+                </td></tr>
             </tbody>
         </table>
     </div>
@@ -201,32 +491,32 @@
 
 {{-- Modal Asignar Vehículo --}}
 <div class="modal fade" id="modalAsignar" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-warning">
-                <h6 class="modal-title"><i class="bi bi-truck me-1"></i> Asignar Vehículo</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+            <div class="modal-header text-white" style="background: linear-gradient(135deg, #071a33 0%, #0a2540 100%); border-bottom: 2px solid #38bdf8; padding: 14px 20px;">
+                <h6 class="modal-title fw-bold text-white mb-0"><i class="bi bi-truck text-info me-2"></i> Asignar Vehículo</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-4">
                 <input type="hidden" id="asignarServicioId">
-                <div class="mb-3 p-2 rounded" style="background:#f8f9fa;border-left:4px solid #18dff5">
-                    <small class="text-muted d-block">Dirección del servicio:</small>
-                    <strong id="asignarDireccionTexto">-</strong>
+                <div class="mb-3 p-3 rounded-3" style="background:#f0f9ff; border-left:4px solid #0284c7; border: 1px solid #bae6fd;">
+                    <small class="text-muted d-block text-uppercase fw-bold" style="font-size: 0.7rem; letter-spacing: 0.5px;">Dirección del servicio:</small>
+                    <strong id="asignarDireccionTexto" style="color: #0a2540; font-size: 0.95rem;">-</strong>
                     <small class="text-muted d-block" id="asignarReferenciaTexto"></small>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Buscar vehículo disponible</label>
-                    <input type="text" class="form-control" id="buscarVehiculo" placeholder="Placa o número móvil...">
+                    <label class="form-label fw-bold text-secondary small">Buscar vehículo disponible</label>
+                    <input type="text" class="form-control" id="buscarVehiculo" placeholder="Placa o número móvil..." style="border-radius: 8px;">
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Tipo</label>
-                    <select class="form-select" id="tipoVehiculo">
+                    <label class="form-label fw-bold text-secondary small">Tipo</label>
+                    <select class="form-select" id="tipoVehiculo" style="border-radius: 8px;">
                         <option value="unico">Único</option>
                         <option value="proximo">Próximo</option>
                     </select>
                 </div>
                 <div id="listaVehiculos" style="max-height:250px;overflow-y:auto">
-                    <p class="text-muted text-center">Escriba para buscar...</p>
+                    <p class="text-muted text-center py-3">Escriba para buscar...</p>
                 </div>
             </div>
         </div>
@@ -235,59 +525,60 @@
 
 {{-- Modal Cambiar Vehículo --}}
 <div class="modal fade" id="modalCambiarVehiculo" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-info text-white">
-                <h6 class="modal-title"><i class="bi bi-arrow-repeat me-1"></i> Cambiar Vehículo</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+            <div class="modal-header text-white" style="background: linear-gradient(135deg, #071a33 0%, #0a2540 100%); border-bottom: 2px solid #38bdf8; padding: 14px 20px;">
+                <h6 class="modal-title fw-bold text-white mb-0"><i class="bi bi-arrow-repeat text-info me-2"></i> Cambiar Vehículo</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-4">
                 <input type="hidden" id="cambiarServicioId">
-                <div class="mb-3 p-2 rounded" style="background:#f8f9fa;border-left:4px solid #17a2b8">
-                    <small class="text-muted d-block">Dirección del servicio:</small>
-                    <strong id="cambiarDireccionTexto">-</strong>
+                <div class="mb-3 p-3 rounded-3" style="background:#f0f9ff; border-left:4px solid #0284c7; border: 1px solid #bae6fd;">
+                    <small class="text-muted d-block text-uppercase fw-bold" style="font-size: 0.7rem; letter-spacing: 0.5px;">Dirección del servicio:</small>
+                    <strong id="cambiarDireccionTexto" style="color: #0a2540; font-size: 0.95rem;">-</strong>
                     <small class="text-muted d-block" id="cambiarReferenciaTexto"></small>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Buscar nuevo vehículo</label>
-                    <input type="text" class="form-control" id="buscarVehiculoCambio" placeholder="Placa o número móvil...">
+                    <label class="form-label fw-bold text-secondary small">Buscar nuevo vehículo</label>
+                    <input type="text" class="form-control" id="buscarVehiculoCambio" placeholder="Placa o número móvil..." style="border-radius: 8px;">
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Tipo</label>
-                    <select class="form-select" id="tipoVehiculoCambio">
+                    <label class="form-label fw-bold text-secondary small">Tipo</label>
+                    <select class="form-select" id="tipoVehiculoCambio" style="border-radius: 8px;">
                         <option value="unico">Único</option>
                         <option value="proximo">Próximo</option>
                     </select>
                 </div>
                 <div id="listaVehiculosCambio" style="max-height:250px;overflow-y:auto">
-                    <p class="text-muted text-center">Escriba para buscar...</p>
+                    <p class="text-muted text-center py-3">Escriba para buscar...</p>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 {{-- Modal Crear Dirección --}}
 <div class="modal fade" id="modalNuevaDireccion" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-success text-white">
-                <h6 class="modal-title"><i class="bi bi-geo-alt me-1"></i> Nueva Dirección</h6>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+            <div class="modal-header text-white" style="background: linear-gradient(135deg, #071a33 0%, #0a2540 100%); border-bottom: 2px solid #38bdf8; padding: 14px 20px;">
+                <h6 class="modal-title fw-bold text-white mb-0"><i class="bi bi-geo-alt text-info me-2"></i> Nueva Dirección</h6>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-4">
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Dirección <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="nuevaDireccionTexto" placeholder="Ej: Calle 10 # 5-20" maxlength="255" required>
+                    <label class="form-label fw-bold text-secondary small">Dirección <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="nuevaDireccionTexto" placeholder="Ej: Calle 10 # 5-20" maxlength="255" required style="border-radius: 8px;">
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Referencia</label>
-                    <input type="text" class="form-control" id="nuevaDireccionReferencia" placeholder="Ej: Frente al parque, casa azul" maxlength="255">
+                    <label class="form-label fw-bold text-secondary small">Referencia</label>
+                    <input type="text" class="form-control" id="nuevaDireccionReferencia" placeholder="Ej: Frente al parque, casa azul" maxlength="255" style="border-radius: 8px;">
                 </div>
                 <div id="errorNuevaDireccion" class="alert alert-danger d-none"></div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-success btn-sm" id="btnGuardarDireccion">
+            <div class="modal-footer bg-light px-4 py-3 border-top">
+                <button type="button" class="btn btn-secondary btn-sm rounded-3" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-sm text-white fw-bold rounded-3" style="background: linear-gradient(135deg, #0284c7 0%, #0052cc 100%); box-shadow: 0 2px 8px rgba(2,132,199,0.3)" id="btnGuardarDireccion">
                     <i class="bi bi-check-lg me-1"></i> Guardar y Seleccionar
                 </button>
             </div>
@@ -297,32 +588,32 @@
 
 {{-- Modal Editar Servicio (Dirección + Condición) --}}
 <div class="modal fade" id="modalEditarServicio" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header" style="background:#1a1a2e;color:#18dff5">
-                <h6 class="modal-title"><i class="bi bi-pencil-square me-1"></i> Editar Servicio</h6>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+            <div class="modal-header text-white" style="background: linear-gradient(135deg, #071a33 0%, #0a2540 100%); border-bottom: 2px solid #38bdf8; padding: 14px 20px;">
+                <h6 class="modal-title fw-bold text-white mb-0"><i class="bi bi-pencil-square text-info me-2"></i> Editar Servicio</h6>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-4">
                 <input type="hidden" id="editarServicioId">
                 <input type="hidden" id="editarClienteId">
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Dirección</label>
+                    <label class="form-label fw-bold text-secondary small">Dirección</label>
                     <div class="input-group">
-                        <select class="form-select" id="editarSelectDireccion">
+                        <select class="form-select" id="editarSelectDireccion" style="border-radius: 8px 0 0 8px;">
                             <option value="">Cargando...</option>
                         </select>
                         <button type="button" class="btn btn-outline-warning" id="btnEditarDireccionActual" title="Editar dirección seleccionada">
                             <i class="bi bi-pencil"></i>
                         </button>
-                        <button type="button" class="btn btn-outline-success" id="btnNuevaDireccionEditar" title="Agregar dirección">
+                        <button type="button" class="btn btn-outline-success" id="btnNuevaDireccionEditar" title="Agregar dirección" style="border-radius: 0 8px 8px 0;">
                             <i class="bi bi-plus-lg"></i>
                         </button>
                     </div>
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Condición</label>
-                    <select class="form-select" id="editarSelectCondicion">
+                    <label class="form-label fw-bold text-secondary small">Condición</label>
+                    <select class="form-select" id="editarSelectCondicion" style="border-radius: 8px;">
                         <option value="ninguno">Ninguno</option>
                         <option value="aire">❄️ Aire</option>
                         <option value="baul">🧳 Baúl</option>
@@ -336,9 +627,9 @@
                 </div>
                 <div id="errorEditarServicio" class="alert alert-danger d-none"></div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-sm text-white" style="background:#1a1a2e" id="btnGuardarEditar">
+            <div class="modal-footer bg-light px-4 py-3 border-top">
+                <button type="button" class="btn btn-secondary btn-sm rounded-3" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-sm text-white fw-bold rounded-3" style="background:linear-gradient(135deg, #0284c7 0%, #0052cc 100%);box-shadow:0 2px 8px rgba(2,132,199,0.3)" id="btnGuardarEditar">
                     <i class="bi bi-check-lg me-1"></i> Guardar Cambios
                 </button>
             </div>
@@ -348,27 +639,27 @@
 
 {{-- Modal Editar Dirección Existente --}}
 <div class="modal fade" id="modalEditarDireccion" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-warning">
-                <h6 class="modal-title"><i class="bi bi-pencil-square me-1"></i> Editar Dirección</h6>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+            <div class="modal-header text-white" style="background: linear-gradient(135deg, #071a33 0%, #0a2540 100%); border-bottom: 2px solid #38bdf8; padding: 14px 20px;">
+                <h6 class="modal-title fw-bold text-white mb-0"><i class="bi bi-pencil-square text-info me-2"></i> Editar Dirección</h6>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-4">
                 <input type="hidden" id="editarDireccionId">
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Dirección <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="editarDireccionTexto" maxlength="255">
+                    <label class="form-label fw-bold text-secondary small">Dirección <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="editarDireccionTexto" maxlength="255" style="border-radius: 8px;">
                 </div>
                 <div class="mb-3">
-                    <label class="form-label fw-bold">Referencia</label>
-                    <input type="text" class="form-control" id="editarDireccionReferencia" maxlength="255">
+                    <label class="form-label fw-bold text-secondary small">Referencia</label>
+                    <input type="text" class="form-control" id="editarDireccionReferencia" maxlength="255" style="border-radius: 8px;">
                 </div>
                 <div id="errorEditarDireccion" class="alert alert-danger d-none"></div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-warning btn-sm" id="btnGuardarEditarDireccion">
+            <div class="modal-footer bg-light px-4 py-3 border-top">
+                <button type="button" class="btn btn-secondary btn-sm rounded-3" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-sm text-white fw-bold rounded-3" style="background: linear-gradient(135deg, #0284c7 0%, #0052cc 100%); box-shadow:0 2px 8px rgba(2,132,199,0.3)" id="btnGuardarEditarDireccion">
                     <i class="bi bi-check-lg me-1"></i> Guardar
                 </button>
             </div>
@@ -501,21 +792,21 @@ document.addEventListener('DOMContentLoaded', function() {
         tbody.innerHTML = servicios.map(s => {
             const condLabel = etiquetaCondicion(s.condicion);
             const vehiculoTxt = s.placa
-                ? `${s.numero_movil} <small class="text-muted">(${s.placa})</small>${s.tipo_vehiculo === 'proximo' ? '<br><span class="badge" style="font-size:0.68rem;background:#ffc107;color:#000">Próximo</span>' : '<br><span class="badge" style="font-size:0.68rem;background:#dc3545;color:#fff">Único</span>'}`
-                : '<span class="text-muted">Sin asignar</span>';
+                ? `<div><span class="fw-bold" style="color:#0a2540">${s.numero_movil}</span> <small class="text-muted">(${s.placa})</small>${s.tipo_vehiculo === 'proximo' ? '<br><span class="badge" style="font-size:0.68rem;background:#fffbeb;color:#b45309;border:1px solid #fde68a;border-radius:6px;font-weight:600">Próximo</span>' : '<br><span class="badge" style="font-size:0.68rem;background:#fef2f2;color:#dc2626;border:1px solid #fecaca;border-radius:6px;font-weight:600">Único</span>'}</div>`
+                : '<span class="text-muted small">Sin asignar</span>';
             const tiempo = calcularTiempo(s.fecha_solicitud);
             const acciones = generarAcciones(s);
 
             return `<tr data-id="${s.id}">
-                <td>${s.id}</td>
+                <td class="ps-3"><span class="fw-bold" style="color:#0284c7">#${s.id}</span></td>
                 <td><strong>${s.telefono || ''}</strong><br><small class="text-muted">${s.cliente_nombre || ''}</small></td>
                 <td>${s.direccion || ''}${s.referencia ? '<br><small class="text-muted">' + s.referencia + '</small>' : ''}</td>
                 <td>${condLabel}${s.observaciones ? '<br><small class="text-muted">' + escapeHtml(s.observaciones) + '</small>' : ''}</td>
                 <td>${vehiculoTxt}</td>
-                <td><span class="badge badge-estado bg-${colorEstado(s.estado)}">${labelEstado(s.estado)}</span></td>
-                <td>${tiempo}</td>
-                <td><small>${s.operador_nombre || ''}</small></td>
-                <td class="text-nowrap">${acciones}</td>
+                <td class="text-center"><span class="badge badge-estado bg-${colorEstado(s.estado)}">${labelEstado(s.estado)}</span></td>
+                <td class="text-center"><span class="fw-semibold text-secondary" style="font-size:0.8rem">${tiempo}</span></td>
+                <td><small class="badge" style="background:#f8fafc;color:#475569;border:1px solid #e2e8f0;font-size:0.72rem;font-weight:600"><i class="bi bi-person me-1"></i>${escapeHtml(s.operador_nombre || '')}</small></td>
+                <td class="text-nowrap pe-3 text-center">${acciones}</td>
             </tr>`;
         }).join('');
 
@@ -525,14 +816,14 @@ document.addEventListener('DOMContentLoaded', function() {
     function generarAcciones(s) {
         let btns = '';
         if (s.estado === 'pendiente') {
-            btns += `<button class="btn btn-outline-secondary btn-accion me-1" onclick="abrirEditarServicio(${s.id})" title="Editar dirección/condición"><i class="bi bi-pencil"></i></button>`;
-            btns += `<button class="btn btn-info btn-accion me-1" onclick="abrirAsignar(${s.id})" title="Asignar vehículo"><i class="bi bi-truck"></i></button>`;
-            btns += `<button class="btn btn-danger btn-accion" onclick="accionServicio(${s.id},'cancelar')" title="Cancelar"><i class="bi bi-x-lg"></i></button>`;
+            btns += `<button class="btn btn-sm btn-outline-secondary btn-accion me-1" onclick="abrirEditarServicio(${s.id})" title="Editar dirección/condición"><i class="bi bi-pencil"></i></button>`;
+            btns += `<button class="btn btn-sm btn-outline-primary btn-accion me-1" onclick="abrirAsignar(${s.id})" title="Asignar vehículo"><i class="bi bi-truck"></i></button>`;
+            btns += `<button class="btn btn-sm btn-outline-danger btn-accion" onclick="accionServicio(${s.id},'cancelar')" title="Cancelar"><i class="bi bi-x-lg"></i></button>`;
         } else if (s.estado === 'asignado' || s.estado === 'en_camino') {
-            btns += `<button class="btn btn-outline-secondary btn-accion me-1" onclick="abrirEditarServicio(${s.id})" title="Editar dirección/condición"><i class="bi bi-pencil"></i></button>`;
-            btns += `<button class="btn btn-outline-info btn-accion me-1" onclick="abrirCambiarVehiculo(${s.id})" title="Cambiar vehículo"><i class="bi bi-arrow-repeat"></i></button>`;
-            btns += `<button class="btn btn-success btn-accion me-1" onclick="accionServicio(${s.id},'finalizar')" title="Finalizar"><i class="bi bi-check-lg"></i></button>`;
-            btns += `<button class="btn btn-danger btn-accion" onclick="accionServicio(${s.id},'cancelar')" title="Cancelar"><i class="bi bi-x-lg"></i></button>`;
+            btns += `<button class="btn btn-sm btn-outline-secondary btn-accion me-1" onclick="abrirEditarServicio(${s.id})" title="Editar dirección/condición"><i class="bi bi-pencil"></i></button>`;
+            btns += `<button class="btn btn-sm btn-outline-info btn-accion me-1" onclick="abrirCambiarVehiculo(${s.id})" title="Cambiar vehículo"><i class="bi bi-arrow-repeat"></i></button>`;
+            btns += `<button class="btn btn-sm btn-outline-success btn-accion me-1" onclick="accionServicio(${s.id},'finalizar')" title="Finalizar"><i class="bi bi-check-lg"></i></button>`;
+            btns += `<button class="btn btn-sm btn-outline-danger btn-accion" onclick="accionServicio(${s.id},'cancelar')" title="Cancelar"><i class="bi bi-x-lg"></i></button>`;
         }
         return btns;
     }
@@ -545,19 +836,19 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     function etiquetaCondicion(c) {
         const map = {
-            aire:          { icon:'❄️', label:'Aire',          bg:'#0dcaf0', color:'#000' },
-            baul:          { icon:'🧳', label:'Baúl',          bg:'#6f42c1', color:'#fff' },
-            mascota:       { icon:'🐾', label:'Mascota',       bg:'#d63384', color:'#fff' },
-            parrilla:      { icon:'📦', label:'Parrilla',      bg:'#fd7e14', color:'#000' },
-            transferencia: { icon:'🏦', label:'Transferencia',  bg:'#198754', color:'#fff' },
-            daviplata:     { icon:'💳', label:'Daviplata',      bg:'#e6308a', color:'#fff' },
-            polarizados:   { icon:'🕶️', label:'Polarizados',   bg:'#343a40', color:'#fff' },
-            silla_ruedas:  { icon:'♿', label:'Silla de ruedas', bg:'#0d6efd', color:'#fff' },
+            aire:          { icon:'❄️', label:'Aire',          bg:'#ecfeff', color:'#0891b2', border:'#a5f3fc' },
+            baul:          { icon:'🧳', label:'Baúl',          bg:'#faf5ff', color:'#7e22ce', border:'#e9d5ff' },
+            mascota:       { icon:'🐾', label:'Mascota',       bg:'#fdf2f8', color:'#be185d', border:'#fbcfe8' },
+            parrilla:      { icon:'📦', label:'Parrilla',      bg:'#fff7ed', color:'#c2410c', border:'#fed7aa' },
+            transferencia: { icon:'🏦', label:'Transferencia',  bg:'#f0fdf4', color:'#15803d', border:'#bbf7d0' },
+            daviplata:     { icon:'💳', label:'Daviplata',      bg:'#fdf2f8', color:'#be185d', border:'#fbcfe8' },
+            polarizados:   { icon:'🕶️', label:'Polarizados',   bg:'#f8fafc', color:'#334155', border:'#cbd5e1' },
+            silla_ruedas:  { icon:'♿', label:'Silla de ruedas', bg:'#eff6ff', color:'#1d4ed8', border:'#bfdbfe' },
             ninguno:       null,
         };
         const item = map[c];
         if (!item) return '';
-        return `<span class="badge" style="background:${item.bg};color:${item.color};font-size:0.73rem">${item.icon} ${item.label}</span>`;
+        return `<span class="badge" style="background:${item.bg};color:${item.color};border:1px solid ${item.border};font-size:0.72rem;font-weight:600;padding:4px 8px;border-radius:6px">${item.icon} ${item.label}</span>`;
     }
     function calcularTiempo(fecha) {
         const diff = Math.floor((Date.now() - new Date(fecha).getTime()) / 60000);
@@ -825,14 +1116,16 @@ document.addEventListener('DOMContentLoaded', function() {
     function renderVehiculos(contenedorId, vehiculos, modo) {
         const cont = document.getElementById(contenedorId);
         if (vehiculos.length === 0) {
-            cont.innerHTML = '<p class="text-muted text-center">No hay vehículos disponibles</p>';
+            cont.innerHTML = '<p class="text-muted text-center py-3">No hay vehículos disponibles</p>';
             return;
         }
         cont.innerHTML = vehiculos.map(v =>
-            `<div class="d-flex justify-content-between align-items-center p-2 border-bottom" style="cursor:pointer"
+            `<div class="d-flex justify-content-between align-items-center p-2 px-3 mb-2 rounded-3 border" style="cursor:pointer; background:#ffffff; transition:all 0.15s ease;"
+                onmouseover="this.style.background='#f0f9ff';this.style.borderColor='#38bdf8'"
+                onmouseout="this.style.background='#ffffff';this.style.borderColor='#dee2e6'"
                 onclick="${modo === 'asignar' ? 'asignarVehiculo' : 'cambiarVehiculoConfirmar'}(${v.id})">
-                <div><strong>${v.numero_movil}</strong> <small class="text-muted">(${v.placa})</small></div>
-                <span class="badge bg-success">Disponible</span>
+                <div><strong style="color:#0a2540">${v.numero_movil}</strong> <small class="text-muted">(${v.placa})</small></div>
+                <span class="badge rounded-pill" style="background:#f0fdf4;color:#16a34a;border:1px solid #bbf7d0;font-size:0.72rem;font-weight:600">Disponible</span>
             </div>`
         ).join('');
     }

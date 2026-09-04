@@ -8,10 +8,40 @@ use Illuminate\Validation\Rule;
 
 class ArticuloSancionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $articulos = ArticuloSancion::orderBy('codigo')->get();
-        return view('articulos-sancion.index', compact('articulos'));
+        $buscar = $request->input('buscar', '');
+        $filtroEstado = $request->input('estado', '');
+        $perPage = $request->input('per_page', 10);
+
+        $limit = match($perPage) {
+            '10' => 10,
+            '20' => 20,
+            '30' => 30,
+            '50' => 50,
+            'todos' => 10000,
+            default => 10,
+        };
+
+        $articulos = ArticuloSancion::when($buscar, function ($q) use ($buscar) {
+                $q->where(function ($sq) use ($buscar) {
+                    $sq->where('codigo', 'like', "%{$buscar}%")
+                       ->orWhere('descripcion', 'like', "%{$buscar}%");
+                });
+            })
+            ->when($filtroEstado, fn($q) => $q->where('estado', $filtroEstado))
+            ->orderBy('codigo')
+            ->paginate($limit)
+            ->appends($request->query());
+
+        $stats = [
+            'total' => ArticuloSancion::count(),
+            'activos' => ArticuloSancion::where('estado', 'activo')->count(),
+            'inactivos' => ArticuloSancion::where('estado', 'inactivo')->count(),
+            'promedio_tiempo' => (int) round(ArticuloSancion::avg('tiempo_sancion') ?? 0),
+        ];
+
+        return view('articulos-sancion.index', compact('articulos', 'stats', 'buscar', 'filtroEstado', 'perPage'));
     }
 
     public function show(ArticuloSancion $articulo)

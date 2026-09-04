@@ -11,10 +11,44 @@ use Illuminate\Support\Facades\Hash;
 
 class UsuarioController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $usuarios = Usuario::orderBy('created_at', 'desc')->get();
-        return view('usuarios.index', compact('usuarios'));
+        $perPage = $request->input('per_page', 10);
+        $buscar = $request->input('buscar', '');
+        $filtroRol = $request->input('rol', '');
+
+        $metricas = [
+            'total' => Usuario::count(),
+            'admins' => Usuario::whereIn('rol', ['superadmin', 'administrador'])->count(),
+            'operadores' => Usuario::where('rol', 'operador')->count(),
+            'activos' => Usuario::where('estado', 'activo')->count(),
+        ];
+
+        $query = Usuario::orderBy('created_at', 'desc');
+
+        if ($buscar) {
+            $query->where(function($q) use ($buscar) {
+                $q->where('nombre', 'like', "%{$buscar}%")
+                  ->orWhere('apellidos', 'like', "%{$buscar}%")
+                  ->orWhere('username', 'like', "%{$buscar}%")
+                  ->orWhere('email', 'like', "%{$buscar}%");
+            });
+        }
+
+        if ($filtroRol) {
+            $query->where('rol', $filtroRol);
+        }
+
+        if ($perPage === 'todos' || $perPage == -1) {
+            $totalCount = (clone $query)->count();
+            $limit = max($totalCount, 1);
+        } else {
+            $limit = in_array((int)$perPage, [10, 20, 30, 50]) ? (int)$perPage : 10;
+        }
+
+        $usuarios = $query->paginate($limit)->appends($request->query());
+
+        return view('usuarios.index', compact('usuarios', 'metricas', 'perPage', 'buscar', 'filtroRol'));
     }
 
     public function show(Usuario $usuario)

@@ -22,6 +22,16 @@ class SancionController extends Controller
 
         $filtroEstado = $request->input('estado', '');
         $filtroVehiculo = $request->input('vehiculo', '');
+        $perPage = $request->input('per_page', 20);
+
+        $limit = match($perPage) {
+            '10' => 10,
+            '20' => 20,
+            '30' => 30,
+            '50' => 50,
+            'todos' => 10000,
+            default => 20,
+        };
 
         $sanciones = Sancion::with(['vehiculo:id,placa,numero_movil', 'articulo:id,codigo,descripcion,tiempo_sancion', 'usuario:id,nombre,apellidos'])
             ->when($filtroEstado, fn($q) => $q->where('estado', $filtroEstado))
@@ -30,16 +40,17 @@ class SancionController extends Controller
                     ->orWhere('numero_movil', 'like', "%{$filtroVehiculo}%"));
             })
             ->orderByDesc('fecha_inicio')
-            ->paginate(20)
-            ->appends($request->only(['estado', 'vehiculo']));
+            ->paginate($limit)
+            ->appends($request->query());
 
         $stats = [
+            'total' => Sancion::count(),
             'activa' => Sancion::where('estado', 'activa')->count(),
             'cumplida' => Sancion::where('estado', 'cumplida')->count(),
             'anulada' => Sancion::where('estado', 'anulada')->count(),
         ];
 
-        return view('sanciones.index', compact('sanciones', 'stats', 'filtroEstado', 'filtroVehiculo'));
+        return view('sanciones.index', compact('sanciones', 'stats', 'filtroEstado', 'filtroVehiculo', 'perPage'));
     }
 
     /**

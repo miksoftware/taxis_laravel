@@ -39,7 +39,7 @@
                         </label>
                     </div>
 
-                    <button type="submit" class="btn" style="background: #1a1a2e; color: #18dff5;" id="btnImportar">
+                    <button type="submit" class="btn btn-primary" id="btnImportar">
                         <i class="bi bi-database-up me-1"></i> Importar Datos
                     </button>
                 </form>
